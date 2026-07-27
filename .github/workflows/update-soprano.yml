@@ -44,7 +44,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if git diff --quiet -- Casks/soprano.rb; then
+          if [[ -z "$(git status --short -- Casks/soprano.rb)" ]]; then
             echo "The Soprano cask is already current."
             exit 0
           fi
