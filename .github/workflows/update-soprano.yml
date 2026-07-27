@@ -1,0 +1,62 @@
+name: Update Soprano cask
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 */6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-soprano-cask
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the tap
+        uses: actions/checkout@v7
+
+      - name: Download and validate the latest cask
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          download_dir="$(mktemp -d)"
+          cleanup() {
+            find "$download_dir" -depth -delete
+          }
+          trap cleanup EXIT
+
+          gh release download \
+            --repo frknue/soprano \
+            --pattern soprano.rb \
+            --dir "$download_dir"
+
+          mkdir -p Casks
+          cp "$download_dir/soprano.rb" Casks/soprano.rb
+          ruby -c Casks/soprano.rb
+
+      - name: Publish changed cask
+        run: |
+          set -euo pipefail
+
+          if git diff --quiet -- Casks/soprano.rb; then
+            echo "The Soprano cask is already current."
+            exit 0
+          fi
+
+          version="$(sed -n 's/^  version "\([^"]*\)"/\1/p' Casks/soprano.rb)"
+          if [[ -z "$version" ]]; then
+            echo "Could not read the Soprano version from the generated cask." >&2
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/soprano.rb
+          git commit -m "soprano $version"
+          git push

@@ -2,6 +2,17 @@
 
 Homebrew formulae maintained by [frknue](https://github.com/frknue).
 
+## Soprano
+
+Install [Soprano](https://github.com/frknue/soprano):
+
+```sh
+brew install --cask frknue/tap/soprano
+```
+
+Soprano is ad-hoc signed but not notarized. If macOS blocks its first launch, approve
+it under **System Settings → Privacy & Security → Open Anyway**.
+
 ## shopify-auth
 
 Install [`shopify-auth`](https://github.com/frknue/shopify-auth):
