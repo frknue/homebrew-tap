@@ -1,6 +1,6 @@
 cask "soprano" do
-  version "0.3.1"
-  sha256 "d7c63e50eea8129850d49449c2085d6b63763412bf0a9c802850957310fd3589"
+  version "0.4.0"
+  sha256 "c447472ee035f514b01b9fd7e0310b0ed6c7ec28b991e6560e5ca57465450bbd"
 
   url "https://github.com/frknue/soprano/releases/download/v#{version}/Soprano-#{version}.dmg"
   name "Soprano"
